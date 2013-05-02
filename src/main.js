@@ -1,4 +1,4 @@
-var imgs = [];
+var resources = [];
 
 window.onload = init;
 
@@ -29,15 +29,15 @@ function init() {
 }
 
 function handleFileLoad(event) {
-    imgs.push(event);
+    resources.push(event);
 }
 
 function startGame() {
     // start the music
     createjs.Sound.play("backgroundMusic", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
     var stage = new createjs.Stage("gameCanvas");
-    for (var i = 0; i < imgs.length; i++) {
-        var item = imgs[i]; //loader.getResult(id);
+    for (var i = 0; i < resources.length; i++) {
+        var item = resources[i]; //loader.getResult(id);
         var id = item.item.id;
         var result = item.result;
 
