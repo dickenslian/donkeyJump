@@ -1,4 +1,4 @@
 donkeyJump
 ==========
 
-Donkey jump game made of HTML5
+Donkey jump game made of HTML5.
