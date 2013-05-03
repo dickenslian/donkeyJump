@@ -35,7 +35,10 @@ function handleFileLoad(event) {
 function startGame() {
     // start the music
     createjs.Sound.play("backgroundMusic", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+    var gameConfig = {};
     var stage = new createjs.Stage("gameCanvas");
+    gameConfig.stage = stage;
+
     for (var i = 0; i < resources.length; i++) {
         var item = resources[i]; //loader.getResult(id);
         var id = item.item.id;
@@ -43,25 +46,20 @@ function startGame() {
 
         switch (id) {
             case "sky":
-                var bmpSky = new createjs.Bitmap(result);
+                gameConfig.imgSky = result;
                 break;
             case "hill":
-                var bmpHill = new createjs.Bitmap(result);
+                gameConfig.imgHill = result;
                 break;
             case "hillnear":
-                var bmpNearHill = new createjs.Bitmap(result);
+                gameConfig.imgHillNear = result;
                 break;
             case "house":
-                var bmpHouse = new createjs.Bitmap(result);
+                gameConfig.imgHouse = result;
                 break;
         }
-
     }
 
-    bmpSky.y = -2272;
-    bmpHill.y = 197;
-    bmpNearHill.y = 187;
-    bmpHouse.y = 216;
-    stage.addChild(bmpSky, bmpHill, bmpNearHill, bmpHouse);
-    stage.update();
+    var donkeyJump = new DonkeyJump(gameConfig);
+    donkeyJump.init();
 }
