@@ -56,6 +56,9 @@ function init() {
         src: "images/frames/donkey/wait.png",
         id: "imgWait"
     }, {
+        src: "images/frames/cloud/cloud_moveable.png",
+        id: "imgCloudMoveable"
+    }, {
         src: "audio/ogg_background.mp3|audio/ogg_background.wav",
         id: "backgroundMusic"
     }];

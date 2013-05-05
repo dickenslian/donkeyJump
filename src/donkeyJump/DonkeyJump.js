@@ -14,8 +14,10 @@
 		// this.donkeyImgs = [config.imgBalloon, config.imgDead, config.imgJump, 
 		// 	config.imgMj, config.imgPlane, config.imgRun, config.imgSuperman, config.Ufo, config.wait];
 		this.donkeyImgs = [config.imgRun, config.imgSuperman, config.imgWait];
+		this.cloudImgs = [config.imgCloudMoveable];
 
 		this.donkey = null;
+		this.clouds = [];
 
 		this.refresh = false;
 		this.stage = config.stage;
@@ -24,6 +26,7 @@
 	DonkeyJump.prototype.init = function() {
 		this.__createScene();
 		this.__createDonkey();
+		this.__createClouds();
 		this.__handleKeyEvent();
 		this.stage.update();
 	}
@@ -50,10 +53,16 @@
 		this.stage.addChild(this.donkey);
 	}
 
+	DonkeyJump.prototype.__createClouds = function() {
+		var cloud = new Cloud(this.cloudImgs);
+		this.clouds.push(cloud);
+		this.stage.addChild(cloud);
+	}
+
 	DonkeyJump.prototype.__handleKeyEvent = function() {
 		var self = this;
 
-		document.onkeydown = function(evt) {
+		document.addEventListener('keydown', function(evt) {
 			self.refresh = true;
 			switch (evt.keyCode) {
 				case KEYCODE_A:
@@ -65,9 +74,9 @@
 					self.donkey.direction = 1;
 					break;
 			};
-		}
+		});
 
-		document.onkeyup = function(evt) {
+		document.addEventListener('keyup', function(evt) {
 			self.refresh = false;
 			switch (evt.keyCode) {
 				case KEYCODE_A:
@@ -79,7 +88,7 @@
 					self.stage.update();
 					break;
 			};
-		}
+		});
 	}
 
 	DonkeyJump.prototype.startGame = function() {
@@ -92,9 +101,12 @@
 		this.fpsText.text = 'FPS:' + Math.floor(createjs.Ticker.getMeasuredFPS());
 		if (this.refresh) {
 			this.donkey.update();
-			this.stage.update();
-			console.log('refresh...');
 		};
+
+		for (var i = this.clouds.length; i--; ) {
+			this.clouds[i].update();
+		};
+		this.stage.update();
 	}
 
 	window.DonkeyJump = DonkeyJump;

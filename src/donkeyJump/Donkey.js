@@ -1,4 +1,5 @@
-(function(){
+(function() {
+
 	var Donkey = function(config) {
 		this.direction = 0;
 		this.curAnimation = 'wait';
@@ -38,10 +39,10 @@
 			this.gotoAndPlay('run');
 			this.curAnimation = 'run';
 		};
-		if (this.x > 528) {
+		if (this.x > 400 + 128) {
 			this.x = 0;
 		} else if (this.x < -128) {
-			this.x = 528;
+			this.x = 400 + 128;
 		} else {
 			this.x = this.x + this.direction;
 		};
