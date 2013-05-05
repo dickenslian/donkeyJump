@@ -91,4 +91,5 @@ function startGame() {
 
     var donkeyJump = new DonkeyJump(gameConfig);
     donkeyJump.init();
+    donkeyJump.startGame();
 }
