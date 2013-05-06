@@ -56,6 +56,9 @@ function init() {
         src: "images/frames/donkey/wait.png",
         id: "imgWait"
     }, {
+        src: "images/frames/donkey/jump.png",
+        id: "imgJump"
+    }, {
         src: "images/frames/cloud/cloud_moveable.png",
         id: "imgCloudMoveable"
     }, {

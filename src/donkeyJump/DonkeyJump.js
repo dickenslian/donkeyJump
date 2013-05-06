@@ -8,16 +8,18 @@
 	var DonkeyJump = function(config) {
 		this.imgSky = config.imgSky;
 		this.imgHill = config.imgHill;
-		this.imgHillNear = config.imgHillNear;
+		this.imgHillNear = config.imgHillnear;
 		this.imgHouse = config.imgHouse;
 
 		// this.donkeyImgs = [config.imgBalloon, config.imgDead, config.imgJump, 
 		// 	config.imgMj, config.imgPlane, config.imgRun, config.imgSuperman, config.Ufo, config.wait];
-		this.donkeyImgs = [config.imgRun, config.imgSuperman, config.imgWait];
+		this.donkeyImgs = [config.imgRun, config.imgSuperman, config.imgWait, config.imgJump];
 		this.cloudImgs = [config.imgCloudMoveable];
 
 		this.donkey = null;
 		this.clouds = [];
+
+		this.viewportDistance = 0;
 
 		this.refresh = false;
 		this.stage = config.stage;
@@ -25,8 +27,8 @@
 
 	DonkeyJump.prototype.init = function() {
 		this.__createScene();
-		this.__createDonkey();
 		this.__createClouds();
+		this.__createDonkey();
 		this.__handleKeyEvent();
 		this.stage.update();
 	}
@@ -97,15 +99,37 @@
 	    createjs.Ticker.setFPS(60);
 	}
 
+	DonkeyJump.prototype.viewportMove = function() {
+		var moveDistance = 20;
+		this.viewportDistance = this.viewportDistance + moveDistance;
+		var vpd = this.viewportDistance;
+
+		if (vpd > 9100) {
+			this.bmpSky.y = this.bmpSky.y + moveDistance / 20;
+		} 
+		if(vpd > 3140) {
+			this.bmpHill.y = this.bmpHill.y + moveDistance / 15;
+		}
+		if(vpd > 640) {
+			this.bmpHillNear.y = this.bmpHillNear.y + moveDistance / 5;
+		};
+		this.bmpHouse.y = this.bmpHouse.y + moveDistance;
+	}
+
 	DonkeyJump.prototype.tick = function() {
 		this.fpsText.text = 'FPS:' + Math.floor(createjs.Ticker.getMeasuredFPS());
-		if (this.refresh) {
-			this.donkey.update();
-		};
+		// if (this.refresh) {
+		// 	this.donkey.update();
+		// };
+
+		// this.viewportMove();
 
 		for (var i = this.clouds.length; i--; ) {
 			this.clouds[i].update();
 		};
+
+		this.donkey.update();
+
 		this.stage.update();
 	}
 
