@@ -11,6 +11,11 @@
 		this.acceX = 0;
 		this.acceY = 0;
 
+		this.collisionX = -14;
+		this.collisionY = 29;
+		this.collisionWidth = 28;
+		this.collisionHeight = 15;
+
 		this.lastTime = 0;
 
 		this.initialize(config);
@@ -26,7 +31,7 @@
 				frames : {width:128, height:128, regX: 64, regY:64},
 				animations : {
 					run : [0, 12, 'run', 1],
-					superman : [13, 24, 'superman', 1],
+					superman : [13, 24, 'superman', 2],
 					wait : [25, 25, false, 1],
 					jump : [26, 59, 'jump', 2]
 				}
@@ -38,7 +43,16 @@
 		this.gotoAndPlay('wait');
 	}
 
-	Donkey.prototype.update = function() {
+	Donkey.prototype.intersects = function (targetBitmapAnimation) {
+        if ((targetBitmapAnimation.x + targetBitmapAnimation.collisionX) < (this.x + this.collisionX + this.collisionWidth) && 
+        	(this.x + this.collisionX) < (targetBitmapAnimation.x + targetBitmapAnimation.collisionX + targetBitmapAnimation.collisionWidth) && 
+        	(targetBitmapAnimation.y + targetBitmapAnimation.collisionY) < (this.y + this.collisionY + this.collisionHeight))
+            return (this.y + this.collisionY) < (targetBitmapAnimation.y + targetBitmapAnimation.collisionY + targetBitmapAnimation.collisionHeight);
+        else
+            return false;
+    };
+
+	Donkey.prototype.update = function(force) {
 		// if (this.direction == 0 && this.curAnimation != 'wait') {
 		// 	this.gotoAndPlay('wait');
 		// 	this.curAnimation = 'wait';
@@ -65,28 +79,35 @@
 		this.speedX = this.speedX + this.acceX * deltaTime;
 		this.speedY = this.speedY + this.acceY * deltaTime;
 		this.x = this.x + this.speedX * deltaTime;
-		if (this.speedY < 1) {
+		// if (this.speedY < 1) {
 			this.y = this.y + this.speedY * deltaTime;
-		} else {
-			this.speedY = -1;
-		};
+		// }
 
-		this.jump();
+		if (force) {
+			this.jump(force);
+		} else {
+			this.jump();
+		};
 
 		this.lastTime = ongoingTime;
 	}
 
 	Donkey.prototype.superman = function() {
 		if (this.curAnimation != 'superman') {
-			this.speedY = -4;
-			this.acceY = 1 / 600;
+			this.speedY = -0.1;
+			this.acceY = 0;
 			this.gotoAndPlay('superman');
 			this.curAnimation = 'superman';
 		};
 	}
 
-	Donkey.prototype.jump = function() {
-		if (this.curAnimation != 'jump') {
+	Donkey.prototype.jump = function(force) {
+		if (force) {
+			this.speedY = -1;
+			this.acceY = 1 / 600;
+			this.gotoAndPlay('jump');
+			this.curAnimation = 'jump';
+		} else if (this.curAnimation != 'jump') {
 			this.speedY = -1;
 			this.acceY = 1 / 600;
 			this.gotoAndPlay('jump');

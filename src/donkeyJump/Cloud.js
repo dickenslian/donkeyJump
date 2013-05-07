@@ -4,6 +4,11 @@
 		this.type = 'moveable';
 		this.direction = 1;
 
+		this.collisionX = -128;
+		this.collisionY = -64;
+		this.collisionWidth = 160;
+		this.collisionHeight = 15;
+
 		this.initialize(config);
 	}
 

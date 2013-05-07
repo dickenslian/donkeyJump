@@ -57,8 +57,23 @@
 
 	DonkeyJump.prototype.__createClouds = function() {
 		var cloud = new Cloud(this.cloudImgs);
-		this.clouds.push(cloud);
-		this.stage.addChild(cloud);
+		var cloud1 = new Cloud(this.cloudImgs);
+		cloud1.x = 200;
+		cloud1.y = 250;
+		var cloud2 = new Cloud(this.cloudImgs);
+		cloud2.x = 250;
+		cloud2.y = 350;
+		var cloud3 = new Cloud(this.cloudImgs);
+		cloud3.x = 300;
+		cloud3.y = 450;
+		var cloud4 = new Cloud(this.cloudImgs);
+		cloud4.x = 350;
+		cloud4.y = 550;
+		var cloud5 = new Cloud(this.cloudImgs);
+		cloud5.x = 400;
+		cloud5.y = 650;
+		this.clouds.push(cloud, cloud1, cloud2, cloud3, cloud4, cloud5);
+		this.stage.addChild(cloud, cloud1, cloud2, cloud3, cloud4, cloud5);
 	}
 
 	DonkeyJump.prototype.__handleKeyEvent = function() {
@@ -100,7 +115,7 @@
 	}
 
 	DonkeyJump.prototype.viewportMove = function() {
-		var moveDistance = 20;
+		var moveDistance = 5;
 		this.viewportDistance = this.viewportDistance + moveDistance;
 		var vpd = this.viewportDistance;
 
@@ -118,17 +133,26 @@
 
 	DonkeyJump.prototype.tick = function() {
 		this.fpsText.text = 'FPS:' + Math.floor(createjs.Ticker.getMeasuredFPS());
+
+		var hitFlag = false;
 		// if (this.refresh) {
 		// 	this.donkey.update();
 		// };
 
-		// this.viewportMove();
+		this.viewportMove();
 
 		for (var i = this.clouds.length; i--; ) {
-			this.clouds[i].update();
+			if (this.donkey.intersects(this.clouds[i])) {
+				hitFlag = true;
+			};
+			// this.clouds[i].update();
 		};
 
-		this.donkey.update();
+		if (hitFlag) {
+			this.donkey.update(1);
+		} else {
+			this.donkey.update();
+		};
 
 		this.stage.update();
 	}
