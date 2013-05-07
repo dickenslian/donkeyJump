@@ -18,6 +18,9 @@
 
 		this.lastTime = 0;
 
+		this.stateUpdate = function(){};
+		this.__superJumpHeight = 0;
+
 		this.initialize(config);
 	}
 
@@ -40,7 +43,8 @@
 		// createjs.SpriteSheetUtils.addFlippedFrames(spriteSheet, true, false, false);
 		this.x = 250;
 		this.y = 630;
-		this.gotoAndPlay('wait');
+		// this.gotoAndPlay('wait');
+		this.stateUpdate = this.superman;
 	}
 
 	Donkey.prototype.intersects = function (targetBitmapAnimation) {
@@ -79,20 +83,22 @@
 		this.speedX = this.speedX + this.acceX * deltaTime;
 		this.speedY = this.speedY + this.acceY * deltaTime;
 		this.x = this.x + this.speedX * deltaTime;
-		// if (this.speedY < 1) {
-			this.y = this.y + this.speedY * deltaTime;
-		// }
+		this.y = this.y + this.speedY * deltaTime;
 
-		if (force) {
-			this.jump(force);
-		} else {
-			this.jump();
-		};
+		this.stateUpdate();
 
 		this.lastTime = ongoingTime;
 	}
 
 	Donkey.prototype.superman = function() {
+		if(this.__superJumpHeight > 200) {
+            this.__superJumpHeight = 0;
+            this.stateUpdate = this.__jump;
+            return false;
+        } else {
+            this.__superJumpHeight += (this.lastY - this.y);
+        }
+
 		if (this.curAnimation != 'superman') {
 			this.speedY = -0.1;
 			this.acceY = 0;
@@ -101,13 +107,15 @@
 		};
 	}
 
-	Donkey.prototype.jump = function(force) {
-		if (force) {
-			this.speedY = -1;
-			this.acceY = 1 / 600;
-			this.gotoAndPlay('jump');
-			this.curAnimation = 'jump';
-		} else if (this.curAnimation != 'jump') {
+	Donkey.prototype.jump = function() {
+		if (this.speedY != -1) {
+			this.curAnimation = '';
+			this.__jump();
+		};
+	}
+
+	Donkey.prototype.__jump = function() {
+		if (this.curAnimation != 'jump') {
 			this.speedY = -1;
 			this.acceY = 1 / 600;
 			this.gotoAndPlay('jump');

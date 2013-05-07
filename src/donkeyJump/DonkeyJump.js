@@ -57,23 +57,9 @@
 
 	DonkeyJump.prototype.__createClouds = function() {
 		var cloud = new Cloud(this.cloudImgs);
-		var cloud1 = new Cloud(this.cloudImgs);
-		cloud1.x = 200;
-		cloud1.y = 250;
-		var cloud2 = new Cloud(this.cloudImgs);
-		cloud2.x = 250;
-		cloud2.y = 350;
-		var cloud3 = new Cloud(this.cloudImgs);
-		cloud3.x = 300;
-		cloud3.y = 450;
-		var cloud4 = new Cloud(this.cloudImgs);
-		cloud4.x = 350;
-		cloud4.y = 550;
-		var cloud5 = new Cloud(this.cloudImgs);
-		cloud5.x = 400;
-		cloud5.y = 650;
-		this.clouds.push(cloud, cloud1, cloud2, cloud3, cloud4, cloud5);
-		this.stage.addChild(cloud, cloud1, cloud2, cloud3, cloud4, cloud5);
+		cloud.x = 300, cloud.y = 500;
+		this.clouds.push(cloud);
+		this.stage.addChild(cloud);
 	}
 
 	DonkeyJump.prototype.__handleKeyEvent = function() {
@@ -127,6 +113,9 @@
 		}
 		if(vpd > 640) {
 			this.bmpHillNear.y = this.bmpHillNear.y + moveDistance / 5;
+			for (var i = this.clouds.length; i--; ) {
+				this.clouds[i].y += 5;
+			};
 		};
 		this.bmpHouse.y = this.bmpHouse.y + moveDistance;
 	}
@@ -134,26 +123,32 @@
 	DonkeyJump.prototype.tick = function() {
 		this.fpsText.text = 'FPS:' + Math.floor(createjs.Ticker.getMeasuredFPS());
 
-		var hitFlag = false;
-		// if (this.refresh) {
-		// 	this.donkey.update();
-		// };
-
-		this.viewportMove();
+		var hitFlag = false
+		    hitCloud = null;
 
 		for (var i = this.clouds.length; i--; ) {
 			if (this.donkey.intersects(this.clouds[i])) {
 				hitFlag = true;
+				hitCloud = this.clouds[i];
 			};
-			// this.clouds[i].update();
+			this.clouds[i].update();
 		};
 
-		if (hitFlag) {
-			this.donkey.update(1);
+		if (this.donkey.y > this.donkey.lastY) {
+			if (hitFlag) {
+				this.donkey.jump();
+				var cloud = new Cloud(this.cloudImgs);
+				cloud.x = this.donkey.x + (this.donkey.direction == -1 ? 45 : 35)
+				cloud.y = hitCloud.y - 250;
+				this.clouds.push(cloud);
+				this.stage.addChild(cloud);
+			};
 		} else {
-			this.donkey.update();
-		};
-
+			this.viewportMove();
+		}
+		
+		this.donkey.update();
+		
 		this.stage.update();
 	}
 
