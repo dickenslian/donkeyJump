@@ -82,7 +82,7 @@
 		this.lastY = this.y;
 		this.speedX = this.speedX + this.acceX * deltaTime;
 		this.speedY = this.speedY + this.acceY * deltaTime;
-		this.x = this.x + this.speedX * deltaTime;
+		// this.x = this.x + this.speedX * deltaTime;
 		this.y = this.y + this.speedY * deltaTime;
 
 		this.stateUpdate();
@@ -116,7 +116,7 @@
 
 	Donkey.prototype.__jump = function() {
 		if (this.curAnimation != 'jump') {
-			this.speedY = -1;
+			this.speedY = -0.8;
 			this.acceY = 1 / 600;
 			this.gotoAndPlay('jump');
 			this.curAnimation = 'jump';

@@ -25,8 +25,6 @@
 				}
 			});
 		this.BitmapAnimation_initialize(spriteSheet);
-		this.x = 128;
-		this.y = 150;
 		this.gotoAndPlay('move');
 	}
 

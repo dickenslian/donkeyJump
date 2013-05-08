@@ -56,10 +56,13 @@
 	}
 
 	DonkeyJump.prototype.__createClouds = function() {
-		var cloud = new Cloud(this.cloudImgs);
-		cloud.x = 300, cloud.y = 500;
-		this.clouds.push(cloud);
-		this.stage.addChild(cloud);
+		for (var i = 0; i < 4; i++) {
+			var cloud = new Cloud(this.cloudImgs);
+			cloud.x = 128 + 353 * Math.random();
+			cloud.y = -200 - i * 250;
+			this.clouds.push(cloud);
+			this.stage.addChild(cloud);
+		};
 	}
 
 	DonkeyJump.prototype.__handleKeyEvent = function() {
@@ -113,8 +116,10 @@
 		}
 		if(vpd > 640) {
 			this.bmpHillNear.y = this.bmpHillNear.y + moveDistance / 5;
+		};
+		if (vpd > 400) {
 			for (var i = this.clouds.length; i--; ) {
-				this.clouds[i].y += 5;
+				this.clouds[i].y += 10;
 			};
 		};
 		this.bmpHouse.y = this.bmpHouse.y + moveDistance;
@@ -134,16 +139,18 @@
 			this.clouds[i].update();
 		};
 
-		if (this.donkey.y > this.donkey.lastY) {
+		if (this.donkey.y > this.donkey.lastY) {	
+			//向下落
 			if (hitFlag) {
 				this.donkey.jump();
 				var cloud = new Cloud(this.cloudImgs);
 				cloud.x = this.donkey.x + (this.donkey.direction == -1 ? 45 : 35)
-				cloud.y = hitCloud.y - 250;
+				cloud.y = hitCloud.y - 1000;
 				this.clouds.push(cloud);
 				this.stage.addChild(cloud);
 			};
 		} else {
+			//向上跳
 			this.viewportMove();
 		}
 		
