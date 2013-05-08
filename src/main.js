@@ -80,7 +80,7 @@ function handleFileLoad(event) {
 
 function startGame() {
     // start the music
-    // createjs.Sound.play("backgroundMusic", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+    createjs.Sound.play("backgroundMusic", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
     var stage = new createjs.Stage("gameCanvas");
     var gameConfig = {};
     gameConfig.stage = stage;

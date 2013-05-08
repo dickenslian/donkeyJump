@@ -18,6 +18,9 @@
 
 		this.donkey = null;
 		this.clouds = [];
+		this.cloudName = -1;
+		this.sameCloudFlag = false;
+		this.lastCloudName = 0;
 
 		this.viewportDistance = 0;
 
@@ -60,6 +63,7 @@
 			var cloud = new Cloud(this.cloudImgs);
 			cloud.x = 128 + 353 * Math.random();
 			cloud.y = -200 - i * 250;
+			cloud.name = this.cloudName++;
 			this.clouds.push(cloud);
 			this.stage.addChild(cloud);
 		};
@@ -119,7 +123,7 @@
 		};
 		if (vpd > 400) {
 			for (var i = this.clouds.length; i--; ) {
-				this.clouds[i].y += 10;
+				this.clouds[i].y += 9;
 			};
 		};
 		this.bmpHouse.y = this.bmpHouse.y + moveDistance;
@@ -132,27 +136,47 @@
 		    hitCloud = null;
 
 		for (var i = this.clouds.length; i--; ) {
-			if (this.donkey.intersects(this.clouds[i])) {
-				hitFlag = true;
-				hitCloud = this.clouds[i];
+			var cld = this.clouds[i];
+			if (cld.y < 1000) {
+				if (this.donkey.y > this.donkey.lastY) {
+					if (this.donkey.intersects(cld)) {
+						this.sameCloudFlag = false;
+						hitFlag = true;
+						hitCloud = cld;
+						if (cld.name == this.lastCloudName) {
+							this.sameCloudFlag = true;
+							this.donkey.speedY = -1;
+						};
+						this.lastCloudName = this.clouds[i].name;
+					};
+				};
+				cld.update();
+			} else {
+				this.stage.removeChild(cld);
 			};
-			this.clouds[i].update();
 		};
 
 		if (this.donkey.y > this.donkey.lastY) {	
 			//向下落
 			if (hitFlag) {
 				this.donkey.jump();
-				var cloud = new Cloud(this.cloudImgs);
-				cloud.x = this.donkey.x + (this.donkey.direction == -1 ? 45 : 35)
-				cloud.y = hitCloud.y - 1000;
-				this.clouds.push(cloud);
-				this.stage.addChild(cloud);
+				if (!this.sameCloudFlag) {
+					var cloud = new Cloud(this.cloudImgs);
+					cloud.x = Math.random() + 480;
+					cloud.y = hitCloud.y - 1000;
+					cloud.name = this.cloudName++;
+					this.clouds.push(cloud);
+					this.stage.addChild(cloud);
+				}
 			};
 		} else {
 			//向上跳
-			this.viewportMove();
+			if (!this.sameCloudFlag) {
+				this.viewportMove();
+			};
 		}
+
+		this.stage.addChild(this.donkey);
 		
 		this.donkey.update();
 		

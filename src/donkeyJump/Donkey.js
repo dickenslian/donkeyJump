@@ -17,6 +17,7 @@
 		this.collisionHeight = 15;
 
 		this.lastTime = 0;
+		this.minTop = 800;
 
 		this.stateUpdate = function(){};
 		this.__superJumpHeight = 0;
@@ -83,6 +84,7 @@
 		this.speedX = this.speedX + this.acceX * deltaTime;
 		this.speedY = this.speedY + this.acceY * deltaTime;
 		// this.x = this.x + this.speedX * deltaTime;
+
 		this.y = this.y + this.speedY * deltaTime;
 
 		this.stateUpdate();
