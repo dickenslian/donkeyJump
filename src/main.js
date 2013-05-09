@@ -1,8 +1,11 @@
+
+//保存已加载资源的信息
 var resources = [];
 
 window.onload = init;
 
 function init() {
+    //需要加载的资源列表
     var manifest = [{
         src: "images/background/sky.jpg",
         id: "imgSky"
@@ -15,38 +18,7 @@ function init() {
     }, {
         src: "images/background/house.png",
         id: "imgHouse"
-    }, 
-    /*
-    {
-        src: "images/frames/donkey/balloon.png",
-        id: "imgBalloon"
     }, {
-        src: "images/frames/donkey/dead.png",
-        id: "imgDead"
-    }, {
-        src: "images/frames/donkey/jump.png",
-        id: "imgJump"
-    }, {
-        src: "images/frames/donkey/mj.png",
-        id: "imgMj"
-    }, {
-        src: "images/frames/donkey/plane.png",
-        id: "imgPlane"
-    }, {
-        src: "images/frames/donkey/run.png",
-        id: "imgRun"
-    }, {
-        src: "images/frames/donkey/superman.png",
-        id: "imgSuperman"
-    }, {
-        src: "images/frames/donkey/ufo.png",
-        id: "imgUfo"
-    }, {
-        src: "images/frames/donkey/wait.png",
-        id: "imgWait"
-    }, 
-    */
-    {
         src: "images/frames/donkey/run.png",
         id: "imgRun"
     }, {
@@ -66,8 +38,9 @@ function init() {
         id: "backgroundMusic"
     }];
 
+    //使用PreloadJS加载资源
     var preload = new createjs.LoadQueue(false);
-
+    //加载SoundJS组件
     preload.installPlugin(createjs.Sound);
     preload.addEventListener("fileload", handleFileLoad);
     preload.addEventListener("complete", startGame);
@@ -75,22 +48,25 @@ function init() {
 }
 
 function handleFileLoad(event) {
+    //每成功加载一个资源，就放到resources数组中
     resources.push(event);
 }
 
 function startGame() {
-    // start the music
+    //播放游戏背景音乐
     createjs.Sound.play("backgroundMusic", createjs.Sound.INTERRUPT_NONE, 0, 0, -1, 0.4);
+
     var stage = new createjs.Stage("gameCanvas");
     var gameConfig = {};
     gameConfig.stage = stage;
 
     for (var i = 0; i < resources.length; i++) {
-        var item = resources[i]; //loader.getResult(id);
+        var item = resources[i]; 
         var id = item.item.id;
         var result = item.result;
 
         if (id != 'backgroundMusic') {
+            //所有图片的列表
             gameConfig[id] = result;
         };
     }

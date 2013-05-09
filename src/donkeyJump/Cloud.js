@@ -15,7 +15,7 @@
 		this.collisionWidth = 160;
 		this.collisionHeight = 15;
 
-		this.name = 0;
+		this.id = 0;
 
 		this.initialize(config);
 	}

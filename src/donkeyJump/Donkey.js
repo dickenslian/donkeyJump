@@ -11,6 +11,7 @@
 		this.acceX = 0;
 		this.acceY = 0;
 
+		//定义碰撞区域
 		this.collisionX = -14;
 		this.collisionY = 29;
 		this.collisionWidth = 28;
@@ -41,13 +42,14 @@
 				}
 			});
 		this.BitmapAnimation_initialize(spriteSheet);
-		// createjs.SpriteSheetUtils.addFlippedFrames(spriteSheet, true, false, false);
+		//只能放在服务器上时才能使用此方法
+		// createjs.SpriteSheetUtils.addFlippedFrames(spriteSheet, true, false, false);		
 		this.x = 250;
 		this.y = 630;
-		// this.gotoAndPlay('wait');
 		this.stateUpdate = this.superman;
 	}
 
+	//矩形碰撞检测
 	Donkey.prototype.intersects = function (targetBitmapAnimation) {
         if ((targetBitmapAnimation.x + targetBitmapAnimation.collisionX) < (this.x + this.collisionX + this.collisionWidth) && 
         	(this.x + this.collisionX) < (targetBitmapAnimation.x + targetBitmapAnimation.collisionX + targetBitmapAnimation.collisionWidth) && 
@@ -58,17 +60,6 @@
     };
 
 	Donkey.prototype.update = function(force) {
-		// if (this.direction == 0 && this.curAnimation != 'wait') {
-		// 	this.gotoAndPlay('wait');
-		// 	this.curAnimation = 'wait';
-		// } else if (this.direction == -1 && this.curAnimation != 'run_h') {
-		// 	this.gotoAndPlay('run_h');
-		// 	this.curAnimation = 'run_h';
-		// } else if (this.direction == 1 && this.curAnimation != 'run') {
-		// 	this.gotoAndPlay('run');
-		// 	this.curAnimation = 'run';
-		// };
-		
 		var ongoingTime = createjs.Ticker.getTime(true),
 			deltaTime = ongoingTime - this.lastTime;
 
@@ -79,11 +70,11 @@
 		} else {
 			this.x = this.x + this.direction * 3;
 		};
+
 		this.lastX = this.x;
 		this.lastY = this.y;
 		this.speedX = this.speedX + this.acceX * deltaTime;
 		this.speedY = this.speedY + this.acceY * deltaTime;
-		// this.x = this.x + this.speedX * deltaTime;
 
 		this.y = this.y + this.speedY * deltaTime;
 

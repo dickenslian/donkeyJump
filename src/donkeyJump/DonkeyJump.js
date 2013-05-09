@@ -10,21 +10,20 @@
 		this.imgHill = config.imgHill;
 		this.imgHillNear = config.imgHillnear;
 		this.imgHouse = config.imgHouse;
-
-		// this.donkeyImgs = [config.imgBalloon, config.imgDead, config.imgJump, 
-		// 	config.imgMj, config.imgPlane, config.imgRun, config.imgSuperman, config.Ufo, config.wait];
 		this.donkeyImgs = [config.imgRun, config.imgSuperman, config.imgWait, config.imgJump];
 		this.cloudImgs = [config.imgCloudMoveable];
 
 		this.donkey = null;
 		this.clouds = [];
-		this.cloudName = -1;
+		//每片云的唯一ID
+		this.cloudId = -1;
+		//标识是否踩在同一片云上
 		this.sameCloudFlag = false;
-		this.lastCloudName = 0;
-
+		//上一次踩到的云ID
+		this.lastCloudId = 0;
+		//保存当前的视口位置
 		this.viewportDistance = 0;
 
-		this.refresh = false;
 		this.stage = config.stage;
 	}
 
@@ -47,7 +46,6 @@
 		this.bmpHillNear.y = 187;
 		this.bmpHouse.y = 216;
 
-
 		this.fpsText = new createjs.Text("FPS:", "20px Arial", "#000");
 
 		this.stage.addChild(this.bmpSky, this.bmpHill, this.bmpHillNear, this.bmpHouse, this.fpsText);
@@ -63,7 +61,7 @@
 			var cloud = new Cloud(this.cloudImgs);
 			cloud.x = 128 + 353 * Math.random();
 			cloud.y = -200 - i * 250;
-			cloud.name = this.cloudName++;
+			cloud.id = this.cloudId++;
 			this.clouds.push(cloud);
 			this.stage.addChild(cloud);
 		};
@@ -73,7 +71,6 @@
 		var self = this;
 
 		document.addEventListener('keydown', function(evt) {
-			self.refresh = true;
 			switch (evt.keyCode) {
 				case KEYCODE_A:
 				case KEYCODE_LEFT:
@@ -87,7 +84,6 @@
 		});
 
 		document.addEventListener('keyup', function(evt) {
-			self.refresh = false;
 			switch (evt.keyCode) {
 				case KEYCODE_A:
 				case KEYCODE_LEFT:
@@ -113,12 +109,15 @@
 		var vpd = this.viewportDistance;
 
 		if (vpd > 9100) {
+			//天空处于远方，移动距离较少
 			this.bmpSky.y = this.bmpSky.y + moveDistance / 20;
 		} 
 		if(vpd > 3140) {
+			//远山移动距离较小
 			this.bmpHill.y = this.bmpHill.y + moveDistance / 15;
 		}
 		if(vpd > 640) {
+			//近山的移动距离偏小
 			this.bmpHillNear.y = this.bmpHillNear.y + moveDistance / 5;
 		};
 		if (vpd > 400) {
@@ -130,52 +129,55 @@
 	}
 
 	DonkeyJump.prototype.tick = function() {
+		//显示帧率
 		this.fpsText.text = 'FPS:' + Math.floor(createjs.Ticker.getMeasuredFPS());
 
-		var hitFlag = false
-		    hitCloud = null;
+		var hitCloud = null;	//碰撞到云的对象
 
 		for (var i = this.clouds.length; i--; ) {
 			var cld = this.clouds[i];
 			if (cld.y < 1000) {
+				//驴子下落
 				if (this.donkey.y > this.donkey.lastY) {
 					if (this.donkey.intersects(cld)) {
 						this.sameCloudFlag = false;
-						hitFlag = true;
 						hitCloud = cld;
-						if (cld.name == this.lastCloudName) {
+						//判断是否踩在同一片云
+						if (cld.id == this.lastCloudId) {
 							this.sameCloudFlag = true;
 							this.donkey.speedY = -1;
 						};
-						this.lastCloudName = this.clouds[i].name;
+						this.lastCloudId = this.clouds[i].id;
 					};
 				};
 				cld.update();
 			} else {
+				//超出视口的云在stage中删除
 				this.stage.removeChild(cld);
 			};
 		};
 
+		//驴子下落
 		if (this.donkey.y > this.donkey.lastY) {	
-			//向下落
-			if (hitFlag) {
+			if (hitCloud) {
 				this.donkey.jump();
 				if (!this.sameCloudFlag) {
 					var cloud = new Cloud(this.cloudImgs);
 					cloud.x = Math.random() + 480;
 					cloud.y = hitCloud.y - 1000;
-					cloud.name = this.cloudName++;
+					cloud.id = this.cloudId++;
 					this.clouds.push(cloud);
 					this.stage.addChild(cloud);
 				}
 			};
+		//驴子向上跳
 		} else {
-			//向上跳
 			if (!this.sameCloudFlag) {
 				this.viewportMove();
 			};
 		}
 
+		//驴子始终显示在最上
 		this.stage.addChild(this.donkey);
 		
 		this.donkey.update();
